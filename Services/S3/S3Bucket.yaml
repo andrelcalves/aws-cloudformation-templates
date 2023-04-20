@@ -26,11 +26,11 @@ Parameters:
 Mappings:
   EnvironmentToBucketSuffix:
     Development:
-      Suffix: '${AWS::Region}-dev'
+      Suffix: 'dev'
     Stage:      
-      Suffix: '${AWS::Region}-stg'
+      Suffix: 'stg'
     Production:
-      Suffix: '${AWS::Region}-prd'
+      Suffix: 'prd'
 
 Conditions:
   AES256: !Equals [!Ref SSEAlgorithm, "AES256"]
@@ -42,11 +42,14 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Join [ '-', [!Ref BucketNameParameter, !FindInMap [EnvironmentToBucketSuffix, !Ref Environment, Suffix]]]
+      AccessControl: Private
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
       BucketEncryption: 
         ServerSideEncryptionConfiguration: 
         - !If
